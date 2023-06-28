@@ -18,6 +18,7 @@ public class BasicItemController {
 
     private final ItemRepository itemRepository;
 
+    // 상품 목록
     @GetMapping
     public String items(Model model) {
         List<Item> items = itemRepository.findAll();
@@ -25,6 +26,7 @@ public class BasicItemController {
         return "basic/items";
     }
 
+    // 상품 상세
     @GetMapping("/{itemId}")
     public String item(@PathVariable Long itemId, Model model) {
         Item item = itemRepository.findById(itemId);
@@ -32,6 +34,7 @@ public class BasicItemController {
         return "basic/item";
     }
 
+    // 상품 등록 폼으로의 이동만
     @GetMapping("/add")
     public String addForm() {
         return "basic/addForm";
@@ -50,7 +53,7 @@ public class BasicItemController {
 
         itemRepository.save(item);
         model.addAttribute("item", item);
-        return "basic/item";
+        return "basic/item"; // 저장을 하면 상품 상세로 go
     }
 
 //    @PostMapping("/add")
@@ -91,6 +94,7 @@ public class BasicItemController {
         return "redirect:/basic/items/" + item.getId();
         // "/basic/items/{itemId} 상품 상세 페이지로 redirect"
         // 그러면 get 요청으로 위 url을 요청하게 되어 새로고침 문제 해결
+        // 하지만 item.getId()와 같이 문자열을 단순히 더해서 url을 나타내면 url인코딩 문제가 발생할 수 있다.
     }
 
     @PostMapping("/add")
@@ -104,6 +108,7 @@ public class BasicItemController {
         // redirectAttribute를 쓰면 기본적으로 url 인코딩 같은 것들이 해결된다.
     }
 
+    // 상품 수정 page 가기
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
         Item item = itemRepository.findById(itemId);
@@ -111,10 +116,11 @@ public class BasicItemController {
         return "basic/editForm";
     }
 
+    // 상품 수정
     @PostMapping("/{itemId}/edit")
     public String edit(@PathVariable Long itemId, @ModelAttribute Item item) {
         itemRepository.update(itemId, item);
-        return "redirect:/basic/items/{itemId}";
+        return "redirect:/basic/items/{itemId}"; // itemId에 대한 상품상세로 이동
         // @PathVariable의 itemId를 url주소값에 치환가능
 //        return "redirect:/basic/items/" + itemId;
 
